@@ -60,7 +60,8 @@ router.post("/", async(req,res) =>
                 )
             }
             else{
-                const createdPost = await postsModel.insert(req.body);
+                const createdPostID = (await postsModel.insert(req.body))["id"];
+                const createdPost = await postsModel.findById(createdPostID);
                 res.status(201).json(createdPost);
             }
         }
@@ -95,8 +96,11 @@ router.put("/:id", async(req,res) =>
                     )
                 }
                 else{
-                    const updatedPost = await postsModel.update(comePostId,req.body);
-                    res.status(200).json(updatedPost);
+                    const updatedPostCode = await postsModel.update(comePostId,req.body);
+                    if(updatedPostCode == 1){
+                        const updatedPost = await postsModel.findById(comePostId)
+                        res.status(200).json(updatedPost);
+                    }
                 }
             }
         }
